@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reehlum</title>
+</head>
+<div id="camera"></div>
+<div id="dropdown">
+    <form onclick="porra()">
+		<label for="opcoes">Escolha o formato de código:</label>
+		<select id="opcoes" name="opcoes">
+			<option value="code_128_reader">code_128_reader</option>
+			<option value="code_93_reader">code_93_reader</option>
+			<option value="2of5_reader">2of5_reader</option>
+			<option value="i2of5_reader">i2of5_reader</option>
+            <option value="upc_e_reader">upc_e_reader</option>
+			<option value="upc_reader">upc_reader</option>
+			<option value="codabar_reader">codabar_reader</option>
+			<option value="code_39_vin_reader">code_39_vin_reader</option>
+            <option value="code_39_reader">code_39_reader</option>
+			<option value="ean_8_reader">ean_8_reader</option>
+			<option value="ean_reader">ean_reader</option>
+		</select>
+	</form>
+</div>
+
+<body>
+    <script>
+        const dropdown = document.querySelector("#opcoes");
+        function porra(){
+            console.log(dropdown.value);
+        }
+    </script>
+    <script src="./quagga/quagga.min.js"></script>
+    <script>
+        Quagga.init({
+        inputStream: {
+            name: "Live",
+            type: "LiveStream",
+            target: document.querySelector('#camera')
+        },
+        decoder: {
+            readers: ["code_128_reader", "code_93_reader", "2of5_reader", "i2of5_reader", "upc_e_reader",
+                "upc_reader", "codabar_reader", "code_39_vin_reader", "code_39_reader", "ean_8_reader",
+                "ean_reader"]
+        }
+        }, function (err) {
+            if (err) {
+                console.log(err);
+                return
+            }
+            console.log("Initialization finished. Ready to start");
+            Quagga.start();
+        });
+
+        Quagga.onDetected(function (data) {
+            console.log(data);
+            document.querySelector('#code').innerHTML = data.codeResult.code;
+        });
+
+        Quagga.locate = true;
+    </script>
+    <style>
+        *{
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
+</body>
+
+</html>

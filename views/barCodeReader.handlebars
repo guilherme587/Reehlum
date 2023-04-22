@@ -1,0 +1,56 @@
+<div id="camera"></div>
+<div id="dropdown">
+    <form onclick="porra()">
+		<label for="opcoes">Escolha o formato de código:</label>
+		<select id="opcoes" name="opcoes">
+			<option value="code_128_reader">code_128_reader</option>
+			<option value="code_93_reader">code_93_reader</option>
+			<option value="2of5_reader">2of5_reader</option>
+			<option value="i2of5_reader">i2of5_reader</option>
+            <option value="upc_e_reader">upc_e_reader</option>
+			<option value="upc_reader">upc_reader</option>
+			<option value="codabar_reader">codabar_reader</option>
+			<option value="code_39_vin_reader">code_39_vin_reader</option>
+            <option value="code_39_reader">code_39_reader</option>
+			<option value="ean_8_reader">ean_8_reader</option>
+			<option value="ean_reader">ean_reader</option>
+		</select>
+	</form>
+</div>
+<script src="../barCodeReader/quagga/quagga.js"></script>
+<script>
+    import Quagga from 'quagga';
+    const dropdown = document.querySelector("#opcoes");
+    const Quagga = require('quagga');
+
+    function porra(){
+        console.log(dropdown.value);
+    }
+
+    if(document.querySelector('#camera')){
+        Quagga.init({
+        inputStream: {
+            name: "Live",
+            type: "LiveStream",
+            target: document.querySelector('#camera')
+        },
+        decoder: {
+            readers: toString(dropdown)
+        }
+        }, function (err) {
+            if (err) {
+                console.log(err);
+                return
+            }
+            console.log("Initialization finished. Ready to start");
+            Quagga.start();
+        });
+
+        Quagga.onDetected(function (data) {
+            console.log(data);
+            document.querySelector('#code').innerHTML = data.codeResult.code;
+        });
+
+        Quagga.locate = true;
+    }
+</script>
